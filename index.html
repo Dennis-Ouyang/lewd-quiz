@@ -97,6 +97,16 @@
     border: 2px solid var(--accent); margin-top: 10px;
   }
   .row { display: flex; gap: 10px; margin-top: 10px; }
+  .consent { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: var(--muted); margin: 0 0 14px; cursor: pointer; }
+  .consent input { flex: none; width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); }
+  .consent a { color: var(--accent); }
+  .consent.shake { animation: shake .4s ease; }
+  @keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+  .btn.off { opacity: .45; }
+  .qr-box.policy-box { text-align: left; max-width: 420px; max-height: 80vh; overflow-y: auto; font-size: 14px; line-height: 1.7; }
+  .qr-box.policy-box > b { display: block; text-align: center; }
+  .policy-box h4 { margin: 14px 0 4px; font-size: 15px; }
+  .policy-box ul { margin: 0; padding-left: 18px; }
   .row .btn { margin-top: 0; }
 
   /* 答题 */
@@ -198,7 +208,7 @@
   .toast {
     position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%);
     background: rgba(0,0,0,.8); color: #fff; padding: 10px 18px; border-radius: 99px;
-    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 20;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s ease; z-index: 20; white-space: nowrap;
   }
   .toast.show { opacity: 1; }
   .qr-modal {
@@ -229,7 +239,11 @@
       <div class="feature"><b>防“装”设计</b>反向题 + 可信度检测</div>
     </div>
     <div class="notice">🔞 题目略带颜色，建议成年人食用。没有标准答案，越诚实越准。</div>
-    <button class="btn" id="startBtn">我已成年，开始测试 🔥</button>
+    <label class="consent" id="consentRow">
+      <input type="checkbox" id="agree">
+      <span>我已成年，并已阅读、同意<a href="#" id="policyLink">《使用说明》</a></span>
+    </label>
+    <button class="btn" id="startBtn">开始测试 🔥</button>
     <button class="btn ghost" id="qrBtn">📱 扫码一起测</button>
   </section>
 
@@ -315,6 +329,32 @@
 </main>
 
 <div class="toast" id="toast"></div>
+
+<div class="qr-modal hidden" id="policyModal">
+  <div class="qr-box policy-box">
+    <b style="font-size:18px">《使用说明》</b>
+    <p>本测试是课程展示用的趣味心理测试，仅供成年人娱乐。勾选同意后，你的作答会<b>匿名上传</b>，用于课堂上的整体统计分析。</p>
+    <h4>会上传的内容</h4>
+    <ul>
+      <li>每道题的选项</li>
+      <li>6 个维度的分数、综合指数、结果类型和答题可信度</li>
+      <li>答题总用时和提交时间</li>
+    </ul>
+    <h4>不会收集的内容</h4>
+    <ul>
+      <li>姓名、学号、手机号、微信等任何能认出你的信息</li>
+      <li>IP 地址、位置和设备信息不会写进数据</li>
+    </ul>
+    <h4>数据怎么用</h4>
+    <ul>
+      <li>只由测试作者查看，只用于整体统计（比如平均分、分布图），不会单独展示任何人的答案</li>
+      <li>课程结束后删除</li>
+    </ul>
+    <p>如果不同意，可以不勾选，也就不能开始测试。</p>
+    <button class="btn" id="policyAgree" style="margin-top:12px">我已阅读并同意</button>
+    <button class="btn ghost" id="policyClose">关闭</button>
+  </div>
+</div>
 
 <div class="qr-modal hidden" id="imgModal">
   <div class="qr-box img-box">
@@ -425,6 +465,15 @@ const SCENARIOS = [
     ["“喜欢什么、不喜欢什么，就该直接说出来。”", "candor"] ] }
 ];
 
+// 固定题号，用于上传数据（题目顺序每次打乱，但编号不变）
+LIKERT.forEach((x, i) => { x.id = "L" + String(i + 1).padStart(2, "0"); });
+SCENARIOS.forEach((x, i) => { x.id = "S" + (i + 1); });
+
+// ---------- 匿名数据上传（Supabase） ----------
+// url 和 key 留空时不上传。key 是 Supabase 的公开密钥（anon / publishable），只能插入、不能读取
+const UPLOAD = { url: "", key: "", table: "responses" };
+const QUIZ_VERSION = "2026-10-25";
+
 // ---------- 结果文案 ----------
 const LEVELS = {
   desire: [
@@ -483,6 +532,7 @@ const $ = id => document.getElementById(id);
 let items = [];      // 本次的题目顺序
 let answers = [];    // 李克特题：0..4；情境题：维度名
 let times = [];      // 每题作答用时（毫秒）
+let startedAt = 0;
 let idx = 0;
 let shownAt = 0;
 let locked = false;
@@ -520,7 +570,7 @@ function show(name) {
 
 function start() {
   items = buildItems();
-  answers = []; times = []; idx = 0;
+  answers = []; times = []; idx = 0; startedAt = Date.now();
   history.replaceState(null, "", location.pathname);
   show("quiz");
   render();
@@ -678,6 +728,28 @@ function finish() {
   const r = score();
   history.replaceState(null, "", "#r=" + encode(r));
   renderResult(r, false);
+  upload(r);
+}
+
+function upload(r) {
+  if (!UPLOAD.url || !UPLOAD.key) return;
+  const ans = {};
+  items.forEach((it, i) => { ans[it.id] = it.type === "likert" ? answers[i] + 1 : answers[i]; });
+  const { base, flavor } = typeOf(r);
+  const row = {
+    version: QUIZ_VERSION,
+    answers: ans,
+    scores: { ...r.s, brake: r.brake, index: r.index },
+    credibility: r.cred,
+    flags: r.reasons,
+    result_type: flavor.adj + base.name,
+    duration_sec: Math.round((Date.now() - startedAt) / 1000)
+  };
+  const headers = { "Content-Type": "application/json", apikey: UPLOAD.key, Prefer: "return=minimal" };
+  if (UPLOAD.key.startsWith("eyJ")) headers.Authorization = "Bearer " + UPLOAD.key; // 旧版 anon JWT
+  fetch(`${UPLOAD.url.replace(/\/$/, "")}/rest/v1/${UPLOAD.table}`, {
+    method: "POST", headers, body: JSON.stringify(row), keepalive: true
+  }).catch(() => {});
 }
 
 function renderResult(r, friend) {
@@ -981,7 +1053,22 @@ function openShareImage(r, base, flavor, tier) {
   $("imgModal").classList.remove("hidden");
 }
 
-$("startBtn").onclick = start;
+const syncStart = () => $("startBtn").classList.toggle("off", !$("agree").checked);
+$("agree").onchange = syncStart;
+syncStart();
+$("startBtn").onclick = () => {
+  if (!$("agree").checked) {
+    const row = $("consentRow");
+    row.classList.remove("shake"); row.offsetHeight; row.classList.add("shake");
+    toast("请先勾选同意《使用说明》");
+    return;
+  }
+  start();
+};
+$("policyLink").onclick = e => { e.preventDefault(); $("policyModal").classList.remove("hidden"); };
+$("policyAgree").onclick = () => { $("agree").checked = true; syncStart(); $("policyModal").classList.add("hidden"); };
+$("policyClose").onclick = () => $("policyModal").classList.add("hidden");
+$("policyModal").onclick = e => { if (e.target.id === "policyModal") $("policyModal").classList.add("hidden"); };
 $("mineBtn").onclick = () => { history.replaceState(null, "", location.pathname); show("home"); };
 $("backBtn").onclick = () => { if (idx > 0) { idx--; render(); } };
 $("retryBtn").onclick = () => { history.replaceState(null, "", location.pathname); show("home"); };
