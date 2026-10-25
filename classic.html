@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cut">
+<title>淫荡值测试 · 经典版</title>
+<meta name="description" content="12 道题测出你的隐藏淫荡值！纯属娱乐。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😏</text></svg>">
+<style>
+  :root {
+    --bg: #fff5f8;
+    --card: #ffffff;
+    --text: #2b1d26;
+    --muted: #8a7180;
+    --accent: #ff4f8b;
+    --accent-2: #a259ff;
+    --option: #fff0f5;
+    --option-hover: #ffe0ec;
+    --border: #f6d3e1;
+    --shadow: 0 10px 30px rgba(255, 79, 139, .15);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1218;
+      --card: #261b23;
+      --text: #f6e9f0;
+      --muted: #b59aa9;
+      --option: #33232e;
+      --option-hover: #45303e;
+      --border: #3f2c39;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .4);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 40px;
+    line-height: 1.6;
+  }
+  .rainbow {
+    position: fixed; top: 0; left: 0; right: 0; height: 6px;
+    background: linear-gradient(90deg, #e40303, #ff8c00, #ffed00, #008026, #24408e, #732982, #5bcefa, #f5a9b8, #ffffff, #f5a9b8, #5bcefa);
+  }
+  main { width: 100%; max-width: 520px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 28px 22px;
+    box-shadow: var(--shadow);
+    animation: pop .35s ease;
+  }
+  @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+  .hidden { display: none !important; }
+  h1 {
+    font-size: 34px; margin: 4px 0 6px; text-align: center; letter-spacing: 1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .emoji-big { font-size: 64px; text-align: center; line-height: 1.1; }
+  .sub { text-align: center; color: var(--muted); margin: 0 0 18px; }
+  .notice {
+    background: var(--option); border-radius: 14px; padding: 12px 14px;
+    font-size: 14px; color: var(--muted); margin: 14px 0;
+  }
+  .notice b { color: var(--text); }
+  .btn {
+    display: block; width: 100%; border: 0; cursor: pointer;
+    padding: 15px 18px; border-radius: 999px; font-size: 17px; font-weight: 600;
+    color: #fff; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    box-shadow: 0 6px 18px rgba(255, 79, 139, .35);
+    transition: transform .1s ease;
+    font-family: inherit;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.ghost {
+    background: transparent; color: var(--accent); box-shadow: none;
+    border: 2px solid var(--accent); margin-top: 10px;
+  }
+  .row { display: flex; gap: 10px; margin-top: 10px; }
+  .row .btn { margin-top: 0; }
+  .progress-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .progress { flex: 1; height: 8px; background: var(--option); border-radius: 99px; overflow: hidden; }
+  .progress > div {
+    height: 100%; width: 0; border-radius: 99px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition: width .3s ease;
+  }
+  .progress-text { font-size: 13px; color: var(--muted); min-width: 44px; text-align: right; }
+  .q-title { font-size: 20px; font-weight: 700; margin: 0 0 18px; }
+  .q-title .q-emoji { margin-right: 6px; }
+  .options { display: grid; gap: 10px; }
+  .option {
+    text-align: left; width: 100%; cursor: pointer;
+    background: var(--option); color: var(--text);
+    border: 2px solid transparent; border-radius: 16px;
+    padding: 14px 16px; font-size: 16px; font-family: inherit; line-height: 1.5;
+    transition: background .15s ease, border-color .15s ease, transform .1s ease;
+  }
+  .option:hover { background: var(--option-hover); }
+  .option:active { transform: scale(.98); }
+  .option.picked { border-color: var(--accent); background: var(--option-hover); }
+  .back {
+    background: none; border: 0; color: var(--muted); font-size: 14px;
+    margin-top: 16px; cursor: pointer; padding: 6px 0; font-family: inherit;
+  }
+  .score-ring { position: relative; width: 200px; height: 200px; margin: 6px auto 10px; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .num {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .score-ring .num strong { font-size: 56px; line-height: 1; color: var(--accent); }
+  .score-ring .num span { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .label {
+    text-align: center; font-size: 26px; font-weight: 800; margin: 4px 0 2px;
+  }
+  .tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 10px 0 14px; }
+  .tag {
+    font-size: 13px; padding: 4px 10px; border-radius: 99px;
+    background: var(--option); color: var(--accent);
+  }
+  .desc { font-size: 16px; margin: 0 0 14px; }
+  .advice { font-size: 15px; color: var(--muted); margin: 0 0 18px; }
+  .footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 18px; }
+  .toast {
+    position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%);
+    background: rgba(0,0,0,.8); color: #fff; padding: 10px 18px; border-radius: 99px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  }
+  .toast.show { opacity: 1; }
+  .qr-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,.55);
+    display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 10;
+  }
+  .qr-box {
+    background: #fff; color: #2b1d26; border-radius: 20px; padding: 24px; text-align: center;
+    max-width: 340px; width: 100%;
+  }
+  .qr-box #qrcode { display: flex; justify-content: center; margin: 12px 0; }
+  .qr-box #qrcode img, .qr-box #qrcode canvas { width: 240px !important; height: 240px !important; }
+  .qr-url { font-size: 12px; word-break: break-all; color: #8a7180; }
+</style>
+</head>
+<body>
+<div class="rainbow" aria-hidden="true"></div>
+<main>
+
+  <!-- 首页 -->
+  <section id="home" class="card">
+    <div class="emoji-big">😏</div>
+    <h1>淫荡值测试</h1>
+    <p class="sub">12 道灵魂拷问，测出你藏在心底的“小火苗”</p>
+
+    <div class="notice">🔞 纯属娱乐，建议成年人食用。</div>
+
+    <button class="btn" id="startBtn">我已成年，开始测试 🔥</button>
+    <button class="btn ghost" id="qrBtn">📱 扫码一起测</button>
+    <a class="btn ghost" href="v2.html" style="text-align:center;text-decoration:none;line-height:normal">🧪 新版多维测试</a>
+  </section>
+
+  <!-- 答题页 -->
+  <section id="quiz" class="card hidden">
+    <div class="progress-wrap">
+      <div class="progress"><div id="bar"></div></div>
+      <div class="progress-text" id="progressText">1/12</div>
+    </div>
+    <h2 class="q-title" id="qTitle"></h2>
+    <div class="options" id="options"></div>
+    <button class="back" id="backBtn">← 上一题</button>
+  </section>
+
+  <!-- 结果页 -->
+  <section id="result" class="card hidden">
+    <p class="sub" style="margin-bottom:4px">你的淫荡值是</p>
+    <div class="score-ring">
+      <svg width="200" height="200" viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#ff4f8b"/>
+            <stop offset="100%" stop-color="#a259ff"/>
+          </linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="86" fill="none" stroke="var(--option)" stroke-width="16"/>
+        <circle id="ring" cx="100" cy="100" r="86" fill="none" stroke="url(#grad)" stroke-width="16"
+                stroke-linecap="round" stroke-dasharray="540.35" stroke-dashoffset="540.35"
+                style="transition: stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)"/>
+      </svg>
+      <div class="num"><strong id="scoreNum">0</strong><span>/ 100</span></div>
+    </div>
+    <div class="emoji-big" id="resEmoji" style="font-size:48px"></div>
+    <div class="label" id="resLabel"></div>
+    <div class="tags" id="resTags"></div>
+    <p class="desc" id="resDesc"></p>
+    <p class="advice" id="resAdvice"></p>
+
+    <button class="btn" id="shareBtn">复制结果，分享给朋友 💌</button>
+    <div class="row">
+      <button class="btn ghost" id="retryBtn">再测一次</button>
+      <button class="btn ghost" id="qrBtn2">📱 扫码</button>
+    </div>
+    <a class="btn ghost" href="v2.html" style="text-align:center;text-decoration:none;line-height:normal">🧪 试试新版多维测试</a>
+  </section>
+
+  <p class="footer"><a href="./" style="color:inherit">← 返回测试入口</a></p>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div class="qr-modal hidden" id="qrModal">
+  <div class="qr-box">
+    <b style="font-size:18px">手机扫码，一起来测 👇</b>
+    <div id="qrcode"></div>
+    <div class="qr-url" id="qrUrl"></div>
+    <button class="btn" id="qrClose" style="margin-top:14px">关闭</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const QUESTIONS = [
+  { e: "👀", q: "在路上看到一个让你心动的人，你的第一反应是？", o: [
+    ["默默移开视线，假装在看风景", 0],
+    ["不动声色地多看两眼", 1],
+    ["脑内已经播完一整季恋爱连续剧", 2],
+    ["直接走上去：“你好，能加个微信吗？”", 3] ] },
+  { e: "🕵️", q: "浏览器的“无痕模式”对你来说是？", o: [
+    ["无痕模式？那是什么？", 0],
+    ["偶尔用来偷偷买惊喜礼物", 1],
+    ["夜里的常驻好朋友", 2],
+    ["我的浏览器只有无痕模式", 3] ] },
+  { e: "😂", q: "朋友讲了一个“带颜色”的笑话，你会？", o: [
+    ["完全没听懂，一脸真诚地问“什么意思？”", 0],
+    ["听懂了，但装作没听懂", 1],
+    ["笑到拍桌子", 2],
+    ["接梗，并且讲了个更有颜色的", 3] ] },
+  { e: "💞", q: "你理想中的第一次约会是？", o: [
+    ["一起去图书馆自习", 0],
+    ["看电影、吃顿好吃的", 1],
+    ["深夜兜风，一起看星星", 2],
+    ["“要不要来我家……看猫？”", 3] ] },
+  { e: "📱", q: "你的手机相册里……", o: [
+    ["全是风景、美食和表情包", 0],
+    ["有几张精心挑选的好看自拍", 1],
+    ["有一个上了锁的私密相册", 2],
+    ["私密相册里还套着一个私密相册", 3] ] },
+  { e: "🌙", q: "深夜 12 点，TA 发来一句“睡了吗？”，你的理解是？", o: [
+    ["TA 是不是有急事？", 0],
+    ["TA 想找人聊聊天", 1],
+    ["嗯……懂的都懂", 2],
+    ["已经在穿鞋出门的路上了", 3] ] },
+  { e: "🎬", q: "看剧看到吻戏的时候，你会？", o: [
+    ["果断快进", 0],
+    ["捂住眼睛，但手指留条缝", 1],
+    ["倒回去，再认真看一遍", 2],
+    ["面无表情：“就这？”", 3] ] },
+  { e: "💡", q: "和喜欢的人独处时，突然停电了，你会？", o: [
+    ["赶紧打开手机找手电筒", 0],
+    ["开始讲鬼故事活跃气氛", 1],
+    ["悄悄往 TA 身边靠近一点", 2],
+    ["内心：感谢电力公司 🙏", 3] ] },
+  { e: "😴", q: "“早点休息”在你的字典里是什么意思？", o: [
+    ["真的去睡觉", 0],
+    ["再刷半小时手机就睡（并没有）", 1],
+    ["换个地方继续夜聊", 2],
+    ["夜生活才刚刚开始", 3] ] },
+  { e: "🕯️", q: "看到“情趣”两个字，你的第一联想是？", o: [
+    ["情绪和趣味？语文题吗？", 0],
+    ["烛光晚餐和玫瑰花", 1],
+    ["购物车里那几件不敢结账的东西", 2],
+    ["我本人就是情趣", 3] ] },
+  { e: "🔮", q: "刚认识一个有好感的人，你最想问 TA 什么？", o: [
+    ["你是哪个专业的？", 0],
+    ["你的 MBTI 是什么？", 1],
+    ["你的理想型是什么样的？", 2],
+    ["你今晚有空吗？", 3] ] },
+  { e: "🎓", q: "做完这个测试，你打算？", o: [
+    ["赶紧关掉，假装什么都没发生过", 0],
+    ["截图发给最好的朋友", 1],
+    ["发朋友圈，顺便@一下暗恋的人", 2],
+    ["拉着全班一起做，然后公开处刑", 3] ] }
+];
+
+const RESULTS = [
+  { max: 15, emoji: "🐰", label: "纯洁小白兔", tags: ["清水本水", "思想纯净", "需要被保护"],
+    desc: "你的思想比白开水还干净，别人讲黄段子，你在认真思考它的语法结构。你可能是这个房间里最后一片净土。",
+    advice: "建议：保持纯真，但也别被身边的老司机们带歪了哦～" },
+  { max: 35, emoji: "🐱", label: "闷骚小猫咪", tags: ["外冷内热", "嘴上说不要", "心里很诚实"],
+    desc: "表面上你是个乖巧的正经人，实际上内心戏比谁都多。你懂的都懂，只是不说——典型的“闷声发大财”型选手。",
+    advice: "建议：偶尔也可以把内心的小剧场分享出来，说不定有人和你一样。" },
+  { max: 55, emoji: "🦊", label: "暧昧高手", tags: ["撩而不自知", "眼神会说话", "进退有度"],
+    desc: "你精通暧昧的艺术，一个眼神、一句话就能让人心跳加速。你知道分寸在哪，玩得开但也收得住。",
+    advice: "建议：撩归撩，遇到真心喜欢的人记得认真一点。" },
+  { max: 75, emoji: "😈", label: "撩人小妖精", tags: ["魅力四射", "段子手", "气氛担当"],
+    desc: "你是朋友圈里公认的“段子王”，有你在的地方空气都是粉红色的。你的魅力值和你的淫荡值一样高。",
+    advice: "建议：在课堂上请稍微收敛一下，老师还在看着呢。" },
+  { max: 90, emoji: "🔥", label: "行走的荷尔蒙", tags: ["火力全开", "自带 BGM", "人间撩物"],
+    desc: "你一出场就自带暧昧滤镜，荷尔蒙浓度严重超标。你对自己的欲望坦坦荡荡，这本身就是一种魅力。",
+    advice: "建议：多喝热水，降降火。" },
+  { max: 100, emoji: "🚗", label: "老司机·淫荡值爆表", tags: ["秋名山车神", "已无药可救", "请系好安全带"],
+    desc: "恭喜你！检测仪已经爆表了。你的车速太快，我们的测试已经追不上你了。全场乘客请系好安全带。",
+    advice: "建议：开车请遵守交通规则，一切以对方的同意为前提 🚦" }
+];
+
+const $ = id => document.getElementById(id);
+const screens = ["home", "quiz", "result"];
+let idx = 0;
+let answers = [];
+
+function show(name) {
+  screens.forEach(s => $(s).classList.toggle("hidden", s !== name));
+  // 重新触发入场动画
+  const el = $(name);
+  el.style.animation = "none"; el.offsetHeight; el.style.animation = "";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderQuestion() {
+  const item = QUESTIONS[idx];
+  $("qTitle").innerHTML = `<span class="q-emoji">${item.e}</span>${idx + 1}. ${item.q}`;
+  $("progressText").textContent = `${idx + 1}/${QUESTIONS.length}`;
+  $("bar").style.width = `${(idx / QUESTIONS.length) * 100}%`;
+  $("backBtn").style.visibility = idx === 0 ? "hidden" : "visible";
+  const box = $("options");
+  box.innerHTML = "";
+  const letters = ["A", "B", "C", "D"];
+  item.o.forEach(([text, score], i) => {
+    const b = document.createElement("button");
+    b.className = "option" + (answers[idx] === score ? " picked" : "");
+    b.textContent = `${letters[i]}. ${text}`;
+    b.onclick = () => pick(score, b);
+    box.appendChild(b);
+  });
+  const el = $("quiz");
+  el.style.animation = "none"; el.offsetHeight; el.style.animation = "";
+}
+
+let locked = false;
+function pick(score, btn) {
+  if (locked) return;
+  locked = true;
+  answers[idx] = score;
+  btn.classList.add("picked");
+  setTimeout(() => {
+    locked = false;
+    if (idx < QUESTIONS.length - 1) { idx++; renderQuestion(); }
+    else finish();
+  }, 220);
+}
+
+function finish() {
+  $("bar").style.width = "100%";
+  const raw = answers.reduce((a, b) => a + b, 0);
+  const max = QUESTIONS.length * 3;
+  // 加一点点随机波动（±2），让每次结果更有“玄学感”
+  let score = Math.round((raw / max) * 100) + Math.floor(Math.random() * 5) - 2;
+  score = Math.max(0, Math.min(100, score));
+  const r = RESULTS.find(x => score <= x.max);
+
+  show("result");
+  $("resEmoji").textContent = r.emoji;
+  $("resLabel").textContent = r.label;
+  $("resTags").innerHTML = r.tags.map(t => `<span class="tag">#${t}</span>`).join("");
+  $("resDesc").textContent = r.desc;
+  $("resAdvice").textContent = r.advice;
+
+  const C = 540.35;
+  $("ring").style.strokeDashoffset = C;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    $("ring").style.strokeDashoffset = C * (1 - score / 100);
+  }));
+  const start = performance.now(), dur = 1400;
+  (function tick(now) {
+    const p = Math.min(1, (now - start) / dur);
+    const eased = 1 - Math.pow(1 - p, 3);
+    $("scoreNum").textContent = Math.round(score * eased);
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+
+  $("shareBtn").onclick = () => {
+    const text = `我在「淫荡值测试」中测出了 ${score} 分！${r.emoji} 我是【${r.label}】\n${r.desc}\n你也来测测 👉 ${location.href.split("#")[0]}`;
+    copy(text);
+  };
+}
+
+function copy(text) {
+  const done = () => toast("已复制，快去分享吧！");
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch (e) { toast("复制失败，请手动截图分享"); }
+  ta.remove();
+}
+
+let toastTimer;
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+}
+
+let qrMade = false;
+function openQR() {
+  const url = location.href.split("#")[0];
+  $("qrUrl").textContent = url;
+  if (!qrMade && window.QRCode) {
+    new QRCode($("qrcode"), { text: url, width: 480, height: 480, correctLevel: QRCode.CorrectLevel.M });
+    qrMade = true;
+  } else if (!window.QRCode) {
+    $("qrcode").textContent = "二维码加载失败，请直接分享上面的链接";
+  }
+  $("qrModal").classList.remove("hidden");
+}
+
+$("startBtn").onclick = () => { idx = 0; answers = []; show("quiz"); renderQuestion(); };
+$("backBtn").onclick = () => { if (idx > 0) { idx--; renderQuestion(); } };
+$("retryBtn").onclick = () => { idx = 0; answers = []; show("home"); };
+$("qrBtn").onclick = openQR;
+$("qrBtn2").onclick = openQR;
+$("qrClose").onclick = () => $("qrModal").classList.add("hidden");
+$("qrModal").onclick = e => { if (e.target.id === "qrModal") $("qrModal").classList.add("hidden"); };
+</script>
+</body>
+</html>
